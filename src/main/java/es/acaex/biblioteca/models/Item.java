@@ -1,6 +1,6 @@
 package es.acaex.biblioteca.models;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,5 +38,5 @@ public class Item {
     private int minimumAge;
     @Column(name = "released_at")
     @Temporal(TemporalType.DATE)
-    private Date releasedAt;
+    private LocalDate releasedAt;
 }
