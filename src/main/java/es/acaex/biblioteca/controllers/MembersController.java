@@ -15,21 +15,23 @@ import es.acaex.biblioteca.repositories.MembersRepository;
 @RestController
 @RequestMapping("members")
 public class MembersController {
-    
-    @Autowired MembersRepository repository;
 
+    @Autowired
+    MembersRepository repository;
+
+    // MARK: Listado
     @GetMapping
     public List<Member> findAll() {
         return repository.findAll();
     }
-    
+
     @PostMapping
-    public Member save(Member member) { 
-        return repository.save(member); 
+    public Member save(Member member) {
+        return repository.save(member);
     }
 
     @GetMapping("{memberId}")
-    public Member findByid(@PathVariable("memberId")Long memberId) {
+    public Member findByid(@PathVariable("memberId") long memberId) {
         return repository.findById(memberId).orElseThrow();
     }
 
