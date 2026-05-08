@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,9 @@ import jakarta.websocket.server.PathParam;
 @RequestMapping("loans")
 public class LoansController {
 
+    private final static int LOAN_DAYS = 21;
+    private final static int LOAN_EXTENSD_DAYS = 15;
+
     @Autowired
     MembersRepository membersRepository;
     @Autowired
@@ -37,10 +41,19 @@ public class LoansController {
         return loansRepository.findAll();
     }
 
+    @PutMapping("/{copyId}")
+    public Loan putMethodName(@PathParam("copyId") Long copyId) {
+        Loan loan = loansRepository.buscaPrestamoActivoDeCopia(copyId).orElseThrow();
+
+        loan.setExpiredAt(addDays(loan.getExpiredAt(), LOAN_EXTENSD_DAYS));
+
+        return loansRepository.save(loan);
+    }
+
     @DeleteMapping("/{copyId}")
     public Loan expiracionPrestamo(@PathParam("copyId") Long copyId) {
 
-        Loan loan = loansRepository.findByCopyIdAndReturnedAtIsNull(copyId).orElseThrow();
+        Loan loan = loansRepository.buscaPrestamoActivoDeCopia(copyId).orElseThrow();
 
         loan.setReturnedAt(new Date());
 
@@ -60,13 +73,13 @@ public class LoansController {
                 .copyId(copy.getId())
                 .startedAt(now)
                 .returnedAt(null)
-                .expiredAt(addDays(now))
+                .expiredAt(addDays(now, LOAN_DAYS))
                 .build();
 
         return loansRepository.save(loan);
     }
 
-    private Date addDays(Date now) {
+    private Date addDays(Date now, int days) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
         calendar.add(Calendar.DAY_OF_MONTH, 21);

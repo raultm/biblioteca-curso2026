@@ -12,4 +12,8 @@ public interface LoansRepository extends JpaRepository<Loan, Long> {
 
     Optional<Loan> findByCopyIdAndReturnedAtIsNull(Long copyId);
 
+    default Optional<Loan> buscaPrestamoActivoDeCopia(Long copyId) {
+        return findByCopyIdAndReturnedAtIsNull(copyId);
+    };
+
 }
