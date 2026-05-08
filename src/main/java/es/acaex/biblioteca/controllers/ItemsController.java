@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.acaex.biblioteca.models.Copy;
 import es.acaex.biblioteca.models.Item;
 import es.acaex.biblioteca.services.items.BuscarItemPorId;
-import es.acaex.biblioteca.services.items.CrearCopiaEnElemento;
+import es.acaex.biblioteca.services.items.CrearCopiasEnElemento;
 import es.acaex.biblioteca.services.items.GuardarItem;
 import es.acaex.biblioteca.services.items.ListarCopiasDeElemento;
 import es.acaex.biblioteca.services.items.ListarInventario;
@@ -29,7 +30,7 @@ public class ItemsController {
     @Autowired
     BuscarItemPorId buscarItemPorId;
     @Autowired
-    CrearCopiaEnElemento crearCopiaEnElemento;
+    CrearCopiasEnElemento crearCopiasEnElemento;
     @Autowired
     ListarCopiasDeElemento listarCopiasDeElemento;
 
@@ -49,8 +50,8 @@ public class ItemsController {
     }
 
     @PostMapping("{itemId}/copies")
-    public Copy crearCopia(@PathVariable("itemId") Long itemId) {
-        return crearCopiaEnElemento.execute(itemId);
+    public List<Copy> crearCopia(@RequestParam(defaultValue = "1") int cantidad, @PathVariable("itemId") Long itemId) {
+        return crearCopiasEnElemento.execute(itemId, cantidad);
     }
 
     @GetMapping("{itemId}/copies")
